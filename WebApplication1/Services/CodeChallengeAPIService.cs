@@ -7,17 +7,16 @@ namespace BasketAPI.Services
 {
     public class CodeChallengeAPIService : ICodeChallengeAPIService
     {
-        private CodeChallengeApiClient _apiClient;
+        private ICodeChallengeApiClient _apiClient;
         private readonly IStorageService _storageService;
         private readonly IConfiguration _configuration;
 
-        public CodeChallengeAPIService(IStorageService storageService, IConfiguration configuration)
+        public CodeChallengeAPIService(IStorageService storageService, IConfiguration configuration, ICodeChallengeApiClient apiClient)
         {
-            _apiClient = new CodeChallengeApiClient(new HttpClient());
-            _apiClient.setDI(storageService, configuration);
+            _apiClient = apiClient;
+            //_apiClient.setDI(storageService, configuration);
             _storageService = storageService;
             _configuration = configuration;
-
         }
 
         public async Task<ICollection<ProductResponse>> GetAllProductsAsync()
@@ -52,7 +51,7 @@ namespace BasketAPI.Services
                     .ToList();
         }
 
-        public async Task<ICollection<ProductResponse>> GetTopRankedProducts()
+        public async Task<ICollection<ProductResponse>> GetTopRankedProductsAsync()
         {
             ICollection<ProductResponse> products = await GetProductList();
 
@@ -60,23 +59,6 @@ namespace BasketAPI.Services
             return products.OrderByDescending(p => p.Stars).ThenBy(p => p.Price)
                     .Take(100)
                     .ToList();
-        }
-
-        private async Task<ICollection<ProductResponse>> GetProductList()
-        {
-            ICollection<ProductResponse> products = _storageService.GetProductList();
-            if (products is null)
-            {
-                // List not in storage, get new Products list from API.
-                products = await _apiClient.GetAllProductsAsync();
-                _storageService.StoreProductList(products);
-            }
-
-            if (products is null || products.Count == 0)
-            {
-                throw new Exception("List of retrived products is null or empty.");
-            }
-            return products;
         }
 
         public async Task<OrderResponse> CreateOrderAsync(Guid basketId)
@@ -94,6 +76,12 @@ namespace BasketAPI.Services
             return orderResponse;
         }
 
+        public async Task<OrderResponse> GetOrderAsync(string orderId)
+        {
+            OrderResponse result = await _apiClient.GetOrderAsync(orderId);
+            return result;
+        }
+
         private CreateOrderRequest CreateOrderRequestFromBasket(Basket basket)
         {
             CreateOrderRequest orderResquest = new CreateOrderRequest()
@@ -109,7 +97,7 @@ namespace BasketAPI.Services
                 {
                     ProductId = line.productId,
                     ProductName = line.productName,
-                    ProductSize = "",
+                    ProductSize = line.size.ToString(),
                     ProductUnitPrice = (double)line.productUnitPrice,
                     Quantity = line.quantity,
                     TotalPrice = (double)line.totalPrice
@@ -119,10 +107,21 @@ namespace BasketAPI.Services
             return orderResquest;
         }
 
-        public async Task<OrderResponse> GetOrderAsync(string orderId)
+        private async Task<ICollection<ProductResponse>> GetProductList()
         {
-            OrderResponse result = await _apiClient.GetOrderAsync(orderId);
-            return result;
+            ICollection<ProductResponse> products = _storageService.GetProductList();
+            if (products is null)
+            {
+                // List not in storage, get new Products list from API.
+                products = await _apiClient.GetAllProductsAsync();
+                _storageService.StoreProductList(products);
+            }
+
+            if (products is null || products.Count == 0)
+            {
+                throw new Exception("List of retrived products is null or empty.");
+            }
+            return products;
         }
     }
 }

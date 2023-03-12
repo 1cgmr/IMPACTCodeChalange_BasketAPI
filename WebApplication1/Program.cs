@@ -25,6 +25,9 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddMemoryCache();
+
+    builder.Services.AddHttpClient();
+    builder.Services.AddSingleton<ICodeChallengeApiClient, CodeChallengeApiClient>();
     builder.Services.AddSingleton<ICodeChallengeAPIService, CodeChallengeAPIService>();
     builder.Services.AddSingleton<IBasketService, BasketService>();
     builder.Services.AddSingleton<IStorageService, MemoryCacheStorageService>();

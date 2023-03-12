@@ -9,5 +9,7 @@ namespace BasketAPI.Models
         public decimal productUnitPrice { get; set; }
         public int quantity { get; set; }
         public decimal totalPrice { get; set; }
+
+        public int size { get; set; }
     }
 }

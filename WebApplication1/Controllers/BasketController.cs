@@ -21,7 +21,7 @@ namespace BasketAPI.Controllers
         }
 
         [HttpGet("id")]
-        public async Task<ActionResult<Basket>> GetBasketById(Guid id)
+        public IActionResult GetBasketById(Guid id)
         {
             return StatusCode(StatusCodes.Status200OK, _storageService.GetBasket(id));
         }
@@ -64,6 +64,7 @@ namespace BasketAPI.Controllers
         public async Task<IActionResult> CommitBasket(Guid id)
         {
             return StatusCode(StatusCodes.Status200OK, "");
+
         }
 
     }

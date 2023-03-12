@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <OpenApiReference Include="OpenAPIs\json.json" CodeGenerator="NSwagCSharp" Namespace="CodeChallengeApiClientNamespace" ClassName="CodeChallengeApiClient">
-      <SourceUri>https://azfun-impact-code-challenge-api.azurewebsites.net/api/swagger/json</SourceUri>
-    </OpenApiReference>
+    <None Include="OpenAPIs\json.json" ClassName="CodeChallengeApiClient" />
   </ItemGroup>
 
   <ItemGroup>

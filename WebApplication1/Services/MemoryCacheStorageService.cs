@@ -27,8 +27,7 @@ namespace BasketAPI.Services
         {
             Basket basket;
             if (!_memoryCache.TryGetValue(id, out basket))
-                throw new BasketNotFoundException(id);            
-            
+                throw new BasketNotFoundException(id);
             return basket;
 
         }
@@ -69,7 +68,8 @@ namespace BasketAPI.Services
 
         public bool DeleteProductList()
         {
-            throw new NotImplementedException();
+            _memoryCache.Remove("Products");
+            return true;
         }
     }
 }

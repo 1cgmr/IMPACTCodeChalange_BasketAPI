@@ -7,16 +7,6 @@ namespace CodeChallengeApiClientNamespace
     public partial class CodeChallengeApiClient
     {
 
-        private IStorageService _storageService;
-        private IConfiguration _configuration;
-
-        //This is a hack to access DI services in this partial class
-        public void setDI(IStorageService storageService, IConfiguration configuration)
-        {
-            _storageService = storageService;
-            _configuration = configuration;
-        }
-
         //This partial method is given by the NSwag toolchain generated code in order to modify the requests
         //In this case we use it to add authentication
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url)

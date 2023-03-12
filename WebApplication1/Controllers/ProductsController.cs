@@ -26,7 +26,7 @@ namespace BasketAPI.Controllers
         [HttpGet("ranked")]
         public async Task<ActionResult<ICollection<ProductResponse>>> GetTopRankedProducts()
         {
-            return StatusCode(StatusCodes.Status200OK, await _codeChallengeAPIService.GetTopRankedProducts());
+            return StatusCode(StatusCodes.Status200OK, await _codeChallengeAPIService.GetTopRankedProductsAsync());
 
         }
 

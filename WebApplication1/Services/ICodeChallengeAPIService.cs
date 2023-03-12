@@ -7,7 +7,7 @@ namespace BasketAPI.Services
         Task<OrderResponse> CreateOrderAsync(Guid basketId);
         Task<ICollection<ProductResponse>> GetAllProductsAsync();
         Task<ICollection<ProductResponse>> GetPaginatedProductsAsync(PaginationParameters paginationParameters);
-        Task<ICollection<ProductResponse>> GetTopRankedProducts();
+        Task<ICollection<ProductResponse>> GetTopRankedProductsAsync();
         Task<OrderResponse> GetOrderAsync(string orderId);
         Task<LoginResponse> LoginAsync();
 

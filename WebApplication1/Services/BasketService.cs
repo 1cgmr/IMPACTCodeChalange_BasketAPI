@@ -40,18 +40,6 @@ namespace BasketAPI.Services
             return await CreateBasket(basketRequest, basketId);
         }
 
-        public async Task<bool> ValidateBasketProducts(BasketRequest basket)
-        {
-            if(basket.basketLines is null || basket.basketLines.Count == 0) { return true; }
-            var basketLinesIds = basket.basketLines.Select(x => x.productId).ToList();
-            var products = await _codeChallengeAPIService.GetAllProductsAsync();
-            var productIds = products.Select(x => x.Id).ToList();
-            var isProductListValid = basketLinesIds.All(id => productIds.Contains(id));
-            if (!isProductListValid)
-                throw new InvalidProductListException();
-            return true;
-        }
-
         public bool DeleteBasket(Guid basketId)
         {
             return _storageService.DeleteBasket(basketId);
@@ -122,6 +110,18 @@ namespace BasketAPI.Services
             return jsonString;
         }
 
+        private async Task<bool> ValidateBasketProducts(BasketRequest basket)
+        {
+            if (basket.basketLines is null || basket.basketLines.Count == 0) { return true; }
+            var basketLinesIds = basket.basketLines.Select(x => x.productId).ToList();
+            var products = await _codeChallengeAPIService.GetAllProductsAsync();
+            var productIds = products.Select(x => x.Id).ToList();
+            var isProductListValid = basketLinesIds.All(id => productIds.Contains(id));
+            if (!isProductListValid)
+                throw new InvalidProductListException();
+            return true;
+        }
+
         private async Task<Basket> PatchBasketWithBasketAsync(Basket storedBasket, Basket basketUpdate)
         {
             var productsList = await _codeChallengeAPIService.GetAllProductsAsync();
@@ -155,6 +155,7 @@ namespace BasketAPI.Services
                 product.productUnitPrice = (decimal)productInCatalog.Price;
                 product.totalPrice = (decimal) (productInCatalog.Price * product.quantity) ;
                 product.productName = productInCatalog.Name;
+                product.size = productInCatalog.Size;
             }
 
             basket.totalAmount = basket.basketLines.Sum(p => p.totalPrice);
