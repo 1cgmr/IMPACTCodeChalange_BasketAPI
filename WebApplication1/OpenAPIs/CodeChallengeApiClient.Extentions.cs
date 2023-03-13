@@ -18,8 +18,7 @@ namespace CodeChallengeApiClientNamespace
                 return;
             }
 
-            string token = string.Empty;
-            _storageService.GetToken();
+            string token = _storageService.GetToken();
 
             if (!(token is null || token == string.Empty))
             {
